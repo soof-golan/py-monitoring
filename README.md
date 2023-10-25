@@ -8,6 +8,8 @@ Python applications.
 
 ## [Watch The Video](https://youtu.be/_9D9W0MKG_o)
 
+[![Python Monitoring](https://github.com/soof-golan/py-monitoring/assets/83900570/0de13582-3e29-466a-9e35-bfeaf17a397a)](https://youtu.be/_9D9W0MKG_o)
+
 ## Usage
 
 To run this yourself
