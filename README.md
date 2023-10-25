@@ -6,13 +6,20 @@ module.
 The `sys.monitoring` module provides a new low-level API for monitoring
 Python applications.
 
-# Usage
+## [Watch The Video](https://youtu.be/_9D9W0MKG_o)
+
+## Usage
+
+To run this yourself
 
 ```bash
-python -m venv venv
+git clone https://github.com/soof-golan/py-monitoring
+cd py-monitoring
+python3.12 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python monitor_me.py
 # watch the output 🍿
 ```
+
 
