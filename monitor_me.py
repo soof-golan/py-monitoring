@@ -1,6 +1,10 @@
+from __future__ import annotations
 import contextlib
+import dis
 import random
 import sys
+from types import CodeType
+
 import numpy as np
 
 if sys.version_info < (3, 12):
@@ -43,9 +47,15 @@ events = namespace(PY_START=1,
           NO_EVENTS=0)
 """
 
+log = []
 
-def something_happened(*args):
-    print(f"something_happend *args: {args}", file=sys.stderr)
+def fn(code: CodeType, instruction_offset: int, callable: object, arg0: object | sys.monitoring.MISSING) -> ...:
+    log.append((code, instruction_offset, callable, arg0))
+
+
+
+
+
 
 
 def somtimes_branch():
@@ -60,29 +70,32 @@ def somtimes_branch():
 @contextlib.contextmanager
 def monitor(tool_id: int):
     sys.monitoring.use_tool_id(tool_id, "monitor_me")
-    events = [sys.monitoring.events.JUMP, sys.monitoring.events.BRANCH]
+    events = [sys.monitoring.events.CALL]
     for event in events:
         sys.monitoring.set_events(tool_id, event)
-        sys.monitoring.register_callback(tool_id, event, something_happened)
+        sys.monitoring.register_callback(tool_id, event, fn)
     try:
         yield
     finally:
+        sys.monitoring.reset_events()
+
         sys.monitoring.free_tool_id(tool_id)
 
 
 def main():
     with monitor(0):
-        while True:
-            if somtimes_branch():
-                a = np.random.randn(1000, 1000)
-                b = np.random.randn(1000, 1000)
-                c = a @ b
-                print("matrix multiplication done", file=sys.stderr)
-            else:
-                with open("/dev/urandom", "rb") as f:
-                    f.read(1024 * 1024 * 50)
-                print("read 50MB from /dev/urandom", file=sys.stderr)
+        if somtimes_branch():
+            a = np.random.randn(1000, 1000)
+            b = np.random.randn(1000, 1000)
+            c = a @ b
+            print("matrix multiplication done", file=sys.stderr)
+        else:
+            with open("/dev/urandom", "rb") as f:
+                f.read(1024 * 1024 * 50)
+            print("read 50MB from /dev/urandom", file=sys.stderr)
 
 
 if __name__ == "__main__":
     main()
+    print(log)
+    breakpoint()
